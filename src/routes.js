@@ -2,11 +2,12 @@ import { Router } from "express"
 import { getCategories, postCategory } from "./controllers/categories.controller.js"
 import { getCustomer, getCustomers, postCustomer, putCustomer } from "./controllers/customers.controller.js"
 import { getGames, postGame } from "./controllers/games.controller.js"
-import { getRentals } from "./controllers/rentals.controller.js"
-import { checkEntityExists, validateIfEntityExists, validationSchema } from "./middlewares/validationRequestBody.middleware.js"
+import { deleteRentals, finishRentals, getRentals, postRentals } from "./controllers/rentals.controller.js"
+import { checkEntityExists, checkIfBirthdayDateIsValid, validateIfEntityExists, validationSchema } from "./middlewares/validationRequestBody.middleware.js"
 import { CategoriesSchema } from "./schemas/categories.schema.js"
 import { CustomersSchema } from "./schemas/customers.schema.js"
 import { GamesSchema } from "./schemas/games.schema.js"
+import { RentalsSchema } from "./schemas/rentals.schema.js"
 
 const router = Router()
 
@@ -19,9 +20,12 @@ router.post('/games', [validationSchema(GamesSchema), validateIfEntityExists('ga
 
 router.get('/customers', getCustomers)
 router.get('/customers/:id', getCustomer)
-router.post('/customers', [validationSchema(CustomersSchema), validateIfEntityExists('customers', 'cpf')], postCustomer)
-router.put('/customers/:id', [validationSchema(CustomersSchema), validateIfEntityExists('customers', 'cpf')], putCustomer)
+router.post('/customers', [validationSchema(CustomersSchema), validateIfEntityExists('customers', 'cpf'), checkIfBirthdayDateIsValid], postCustomer)
+router.put('/customers/:id', [validationSchema(CustomersSchema), validateIfEntityExists('customers', 'cpf'), checkIfBirthdayDateIsValid], putCustomer)
 
 router.get('/rentals', getRentals)
+router.post('/rentals', [validationSchema(RentalsSchema)], postRentals)
+router.post('/rentals/:id/return', finishRentals)
+router.delete('/rentals/:id', deleteRentals)
 
 export { router }
