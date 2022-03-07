@@ -144,7 +144,7 @@ export async function deleteRentals(req, res) {
       return res.sendStatus(400)
     }
 
-    await connection.query(`DELETE FROM rentals WHERE id = $1`, [rows[0].id])
+    await connection.query(`DELETE FROM rentals WHERE id = $1`, [id])
 
     res.sendStatus(200)
 }
